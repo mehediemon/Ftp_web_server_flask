@@ -3,43 +3,12 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Uploaded Files</h1>
-
-<!-- Search bar -->
-
-
-<!-- Filter options -->
-<div class="form-group mb-4">
-    <label>
-        <input type="checkbox" id="publicFilter"> Public
-    </label>
-    <label>
-        <input type="checkbox" id="privateFilter"> My Files
-    </label>
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to the Flask FTP App!</h1>
+    <p class="lead">Upload, manage, and share your files with ease.</p>
+    <hr class="my-4">
+    <p>Use the navigation bar to upload files or manage your account.</p>
+    <a type="button" class="btn btn-primary" href="{{ url_for('upload_file') }}">Upload Files</a>
+    <a type="button" class="btn btn-primary" href="{{ url_for('file_list') }}">Show files</a>
 </div>
-
-<!-- File list -->
-<ul id="fileList" class="list-group"></ul>
-
-
-<script>
-    function updateFileList() {
-        let searchQuery = document.getElementById('searchBar').value;
-        let showPublic = document.getElementById('publicFilter').checked;
-        let showPrivate = document.getElementById('privateFilter').checked;
-
-        fetch(`/file_list?search=${encodeURIComponent(searchQuery)}&public=${showPublic ? 'on' : 'off'}&private=${showPrivate ? 'on' : 'off'}`)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('fileList').innerHTML = data.file_list;
-            });
-    }
-
-    document.getElementById('searchBar').addEventListener('input', updateFileList);
-    document.getElementById('publicFilter').addEventListener('change', updateFileList);
-    document.getElementById('privateFilter').addEventListener('change', updateFileList);
-
-    // Initial load
-    updateFileList();
-</script>
 {% endblock %}

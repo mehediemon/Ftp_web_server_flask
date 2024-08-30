@@ -3,88 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}My File Server{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-    <style>
-        .navbar {
-            align-items: center;
-        }
-        .navbar-search {
-            flex: 1;
-            max-width: 600px; /* Adjust max-width as needed */
-        }
-        .navbar-search .form-control {
-            width: 100%;
-        }
-        .navbar-nav-right {
-            margin-left: auto;
-        }
-        .navbar-nav-center {
-            display: flex;
-            justify-content: center;
-            flex: 1;
-        }
-    </style>
+    <title>{% block title %}Flask FTP App{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <!-- Navigation bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="padding-left: 3%; padding-right: 3%;">
-        
-        <div class="collapse navbar-collapse d-flex">
-            <a class="navbar-brand" href="{{ url_for('index') }}">File Server</a>
-            <!-- Navbar items (left side) -->
-            <ul class="navbar-nav">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{{ url_for('index') }}">FTP App</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
                 {% if current_user.is_authenticated %}
-                
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('index') }}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('upload_file') }}">Upload</a>
-                </li>
-
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('upload_file') }}">Upload File</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('file_list') }}">My Files</a>
+                    </li>
                 {% endif %}
             </ul>
-
-            <!-- Centered search bar -->
-
-
-            <!-- User info and logout (right side) -->
-
-        </div>
-        <div class="navbar-search navbar-nav-center">
-            <input type="text" id="searchBar" class="form-control" placeholder="Search files..." value="{{ request.args.get('search', '') }}">
-        </div>
-        <div>
-            {% if current_user.is_authenticated %}
-            <ul class="navbar-nav navbar-nav-right">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('edit_profile') }}">{{ current_user.username }}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-                </li>
+            <form class="form-inline my-2 my-lg-0 mr-auto" method="GET" action="{{ url_for('file_list') }}">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search files" name="search" aria-label="Search" value="{{ search_query }}">
+            </form>
+            <ul class="navbar-nav">
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('edit_profile') }}">{{ current_user.username }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                    </li>
+                {% endif %}
             </ul>
-            {% endif %}
         </div>
-
     </nav>
 
-    <!-- Main content -->
     <div class="container mt-4">
-        {% block content %}
-        {% endblock %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
     </div>
 
-    <script>
-        document.getElementById('searchBar').addEventListener('input', function() {
-            let searchQuery = this.value;
-            fetch(`/file_list?search=${encodeURIComponent(searchQuery)}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('fileList').innerHTML = data.file_list;
-                });
-        });
-    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

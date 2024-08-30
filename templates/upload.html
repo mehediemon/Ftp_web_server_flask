@@ -3,20 +3,19 @@
 {% block title %}Upload File{% endblock %}
 
 {% block content %}
-<h1>Upload File</h1>
-<form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+<h2>Upload File</h2>
+<form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_file') }}">
     <div class="form-group">
         <label for="file">Choose file</label>
-        <input type="file" class="form-control" id="file" name="file" required>
+        <input type="file" class="form-control-file" id="file" name="file" required>
     </div>
     <div class="form-group">
-        <label for="filename">New filename (without extension)</label>
-        <input type="text" class="form-control" id="filename" name="filename" required>
+        <label for="filename">Rename File (optional)</label>
+        <input type="text" class="form-control" id="filename" name="filename">
     </div>
-    <div class="form-group">
-        <label>
-            <input type="checkbox" name="public"> Public
-        </label>
+    <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="public" name="public">
+        <label class="form-check-label" for="public">Make Public</label>
     </div>
     <button type="submit" class="btn btn-primary">Upload</button>
 </form>
