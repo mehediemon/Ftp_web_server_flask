@@ -1,0 +1,13 @@
+{% for file in files %}
+<li class="list-group-item">
+    <a href="{{ url_for('download_file', file_id=file.id) }}"> {{ file.filename }} </a>
+    <span class="float-right">
+        {% set size_mb = file.size / 1024 / 1024 %}
+        Size: {{ size_mb | round(2) }} MB
+    </span>
+    <div class="text-muted">Uploaded by: {{ file.user.username }} at: {{ file.uploaded_at.strftime('%Y-%m-%d') }}</div>
+</li>
+{% endfor %}
+{% if not files %}
+<li class="list-group-item">No files available.</li>
+{% endif %}

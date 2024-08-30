@@ -1,73 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload/Download</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-    <style>
-        .progress {
-            height: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container mt-5">
-        <h1 class="mb-4">Uploaded Files</h1>
+{% extends 'base.html' %}
 
-        <!-- Search bar -->
-        <div class="form-group mb-4">
-            <input type="text" id="searchBar" class="form-control" placeholder="Search files..." value="{{ request.args.get('search', '') }}">
-        </div>
+{% block title %}Home{% endblock %}
 
-        <!-- Filter options -->
-        <div class="form-group mb-4">
-            <label>
-                <input type="checkbox" id="publicFilter" {% if show_public %}checked{% endif %}> Public
-            </label>
-            <label>
-                <input type="checkbox" id="privateFilter" {% if show_private %}checked{% endif %}> My Files
-            </label>
-        </div>
+{% block content %}
+<h1 class="mb-4">Uploaded Files</h1>
 
-        <!-- File list -->
-        <ul id="fileList" class="list-group">
-            {% for file in files %}
-            <li class="list-group-item">
-                <a href="{{ url_for('download_file', file_id=file.id) }}">{{ file.filename }}</a>
-                <span class="float-right">{{ file.size / 1024|round(2) }} KB</span>
-                <div class="text-muted">{{ file.uploaded_at.strftime('%Y-%m-%d') }}</div>
-            </li>
-            {% endfor %}
-            {% if not files %}
-            <li class="list-group-item">No files available.</li>
-            {% endif %}
-        </ul>
+<!-- Search bar -->
 
-        <a href="{{ url_for('upload_file') }}" class="btn btn-primary mt-4">Upload New File</a>
-        <a href="{{ url_for('logout') }}" class="btn btn-secondary mt-4">Logout</a>
-    </div>
 
-    <script>
-        document.getElementById('searchBar').addEventListener('input', function() {
-            updateFilters();
-        });
+<!-- Filter options -->
+<div class="form-group mb-4">
+    <label>
+        <input type="checkbox" id="publicFilter"> Public
+    </label>
+    <label>
+        <input type="checkbox" id="privateFilter"> My Files
+    </label>
+</div>
 
-        document.getElementById('publicFilter').addEventListener('change', function() {
-            updateFilters();
-        });
+<!-- File list -->
+<ul id="fileList" class="list-group"></ul>
 
-        document.getElementById('privateFilter').addEventListener('change', function() {
-            updateFilters();
-        });
 
-        function updateFilters() {
-            let searchQuery = document.getElementById('searchBar').value;
-            let showPublic = document.getElementById('publicFilter').checked;
-            let showPrivate = document.getElementById('privateFilter').checked;
+<script>
+    function updateFileList() {
+        let searchQuery = document.getElementById('searchBar').value;
+        let showPublic = document.getElementById('publicFilter').checked;
+        let showPrivate = document.getElementById('privateFilter').checked;
 
-            window.location.href = `/?search=${encodeURIComponent(searchQuery)}&public=${showPublic ? 'on' : 'off'}&private=${showPrivate ? 'on' : 'off'}`;
-        }
-    </script>
-</body>
-</html>
+        fetch(`/file_list?search=${encodeURIComponent(searchQuery)}&public=${showPublic ? 'on' : 'off'}&private=${showPrivate ? 'on' : 'off'}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('fileList').innerHTML = data.file_list;
+            });
+    }
+
+    document.getElementById('searchBar').addEventListener('input', updateFileList);
+    document.getElementById('publicFilter').addEventListener('change', updateFileList);
+    document.getElementById('privateFilter').addEventListener('change', updateFileList);
+
+    // Initial load
+    updateFileList();
+</script>
+{% endblock %}

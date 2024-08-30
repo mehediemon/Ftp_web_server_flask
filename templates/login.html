@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="mb-4">Login</h1>
+        <h2>Login</h2>
         <form action="{{ url_for('login') }}" method="post">
             <div class="form-group">
                 <label for="username">Username</label>
@@ -19,8 +19,8 @@
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
-            <a href="{{ url_for('register') }}" class="btn btn-link">Register</a>
         </form>
+        <a href="{{ url_for('register') }}">Register</a>
     </div>
 </body>
 </html>
