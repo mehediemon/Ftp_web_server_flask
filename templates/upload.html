@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload File</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <style>
+        .progress {
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Upload a File</h1>
+        <form id="uploadForm" action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Choose File</label>
+                <input type="file" class="form-control-file" name="file" id="file" required>
+            </div>
+            <div class="form-group">
+                <label for="filename">New Filename</label>
+                <input type="text" class="form-control" id="filename" name="filename" required>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="public" name="public">
+                <label class="form-check-label" for="public">Public</label>
+            </div>
+            <button type="submit" class="btn btn-success mt-3">Upload</button>
+        </form>
+
+        <!-- Progress bar -->
+        <div class="progress mt-3" style="display:none;">
+            <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%;"></div>
+        </div>
+
+        <a href="{{ url_for('index') }}" class="btn btn-secondary mt-4">Back to Home</a>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent the form from submitting the default way
+            
+            var formData = new FormData(this);
+            var xhr = new XMLHttpRequest();
+
+            // Set up the progress event
+            xhr.upload.onprogress = function(event) {
+                if (event.lengthComputable) {
+                    var percentComplete = Math.round((event.loaded / event.total) * 100);
+                    document.querySelector('.progress').style.display = 'block';
+                    document.getElementById('progressBar').style.width = percentComplete + '%';
+                    document.getElementById('progressBar').innerText = percentComplete + '%';
+                }
+            };
+
+            // Set up the load event
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Upload completed successfully
+                    document.querySelector('.progress').style.display = 'none';
+                    alert('File successfully uploaded');
+                    window.location.href = '{{ url_for("index") }}';
+                } else {
+                    // Handle error
+                    alert('Upload failed');
+                }
+            };
+
+            // Set up the request
+            xhr.open('POST', this.action, true);
+            xhr.send(formData);
+        });
+    </script>
+</body>
+</html>
