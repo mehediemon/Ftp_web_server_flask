@@ -9,7 +9,6 @@ A Flask-based web application that simulates an FTP server for uploading and dow
   - [Docker](#docker)
 - [Usage](#usage)
 - [Configuration](#configuration)
-- [Contributing](#contributing)
 
 # Features 
 - User authentication
@@ -61,6 +60,6 @@ Navigate to the directory containing docker-compose.yml and run:
 This command will build the Docker image (if not already built) and start the container in detached mode. The application will be accessible at http://localhost:5002.
 
 
-**Configuration:**
+# Configuration
 
 Configuration settings can be modified in config.py. For example, you can change the secret key or database URI.
