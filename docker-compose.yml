@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  ftpwebserverflask:
+    image: ftpwebserverflask
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "5002:5002"
+    volumes:
+      - /home/mehedi/RND/Projects/data/ftp_app_upload_data:/app/uploads  # Map host directory to container directory for uploads
+      - /home/mehedi/RND/Projects/db:/app/Database  # Map host directory to container directory for the database

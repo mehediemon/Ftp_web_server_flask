@@ -104,21 +104,29 @@ def index():
 def file_list():
     search_query = request.args.get('search', '')
     page = int(request.args.get('page', 1))
-    per_page = 10  # Number of files per page
+    per_page = 15  # Number of files per page
 
-    # Construct query with filtering and searching
-    query = File.query.filter(File.filename.ilike(f'%{search_query}%'))
+    # Base query: show public files and the current user's private files
+    query = File.query.filter(
+        (File.public == True) | (File.user_id == current_user.id)
+    )
+
+    # Apply search filter if there's a search query
+    if search_query:
+        query = query.filter(File.filename.ilike(f'%{search_query}%'))
     
+    # Checkbox filtering
     if request.args.get('public'):
         query = query.filter_by(public=True)
     if request.args.get('private'):
         query = query.filter_by(public=False, user_id=current_user.id)
-    
+
     # Pagination
     files = query.order_by(File.upload_date.desc()).paginate(page=page, per_page=per_page, error_out=False)
     total_pages = files.pages  # Get total pages from the pagination object
 
     return render_template('file_list.html', files=files.items, total_pages=total_pages, current_page=page, search_query=search_query)
+
 
 
 
@@ -151,7 +159,7 @@ def upload_file():
             db.session.commit()
 
             flash('File uploaded successfully', 'success')
-            return redirect(url_for('index'))
+            return redirect(url_for('file_list'))
 
     return render_template('upload.html')
 

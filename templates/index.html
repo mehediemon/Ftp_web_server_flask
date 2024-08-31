@@ -4,10 +4,10 @@
 
 {% block content %}
 <div class="jumbotron">
-    <h1 class="display-4">Welcome to the Flask FTP App!</h1>
-    <p class="lead">Upload, manage, and share your files with ease.</p>
+    <div class="text-center"><h1><img src="{{ url_for('static', filename='img/img.png') }}" alt="Brand Logo" style="max-height: 250px; width: auto;"></h1></div>
+    <h1 class="display-4 text-center">Welcome to ClouTS FTP!</h1>
     <hr class="my-4">
-    <p>Use the navigation bar to upload files or manage your account.</p>
+    <p>Use Clouts FTP to upload files or manage your account.</p>
     <a type="button" class="btn btn-primary" href="{{ url_for('upload_file') }}">Upload Files</a>
     <a type="button" class="btn btn-primary" href="{{ url_for('file_list') }}">Show files</a>
 </div>
