@@ -27,6 +27,7 @@ To run the application locally, follow these steps:
    
   ```
   python3 -m venv ftp_app_env
+  source path/to/ftp_app_env/bin/activate
 
   ```
    
