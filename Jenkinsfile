@@ -14,5 +14,26 @@ pipeline {
                 '''
             }
         }
+        stage('Transfer Files to Remote Server') {
+            steps {
+                script {
+                    echo 'Transferring files to remote server...'
+                    sh """
+                        scp -i devtestkey.pem -r . ubuntu@13.126.82.73:/mnt/
+                    """
+                }
+            }
+        }
+
+        stage('Deploy on Remote Server') {
+            steps {
+                script {
+                    echo 'Deploying application on remote server...'
+                    sh """
+                        ssh -i devtestkey.pem ubuntu@13.126.82.73 'cd /mnt/ && docker-compose up -d'
+                    """
+                }
+            }
+        }
     }
 }
